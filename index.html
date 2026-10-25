@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ex-এর চক্করে | Neon Cyber Snake</title>
+    <title>Ex-এর চক্করে | Real Snake Arcade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Orbitron:wght@700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@600;700;800&family=Orbitron:wght@700;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -21,16 +21,16 @@
             --neon-cyan: #00f3ff;
             --neon-pink: #ff0077;
             --neon-yellow: #ffe600;
-            --neon-purple: #8b00ff;
-            --bg-void: #05060a;
+            --snake-green: #22c55e;
+            --bg-void: #06070c;
         }
 
         body {
             background-color: var(--bg-void);
             background-image: 
-                radial-gradient(circle at 50% 15%, rgba(0, 243, 255, 0.12) 0%, transparent 60%),
-                radial-gradient(circle at 85% 80%, rgba(255, 0, 119, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 15% 85%, rgba(139, 0, 255, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 50% 10%, rgba(34, 197, 94, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 85% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 15% 85%, rgba(255, 0, 119, 0.08) 0%, transparent 50%);
             font-family: 'Outfit', 'Hind Siliguri', sans-serif;
             color: #fff;
             overflow: hidden;
@@ -42,11 +42,10 @@
             touch-action: none;
         }
 
-        /* Subtle animated cyber grid */
-        .cyber-grid-bg {
+        .ambient-grid {
             position: fixed;
             inset: 0;
-            background-size: 40px 40px;
+            background-size: 38px 38px;
             background-image: 
                 linear-gradient(to right, rgba(0, 243, 255, 0.025) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(0, 243, 255, 0.025) 1px, transparent 1px);
@@ -54,7 +53,6 @@
             z-index: 0;
         }
 
-        /* Main Game Layout Container */
         #gameApp {
             position: relative;
             width: 100%;
@@ -69,18 +67,18 @@
             z-index: 2;
         }
 
-        /* 1. Sleek Top HUD */
+        /* Top HUD */
         .top-hud {
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 8px 16px;
-            background: rgba(10, 15, 30, 0.7);
-            border: 1px solid rgba(0, 243, 255, 0.25);
+            background: rgba(10, 15, 30, 0.85);
+            border: 1.5px solid rgba(0, 243, 255, 0.35);
             border-radius: 30px;
             backdrop-filter: blur(14px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 243, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 243, 255, 0.15);
             margin-bottom: 6px;
             z-index: 10;
         }
@@ -106,8 +104,8 @@
         }
 
         .hud-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             width: 36px;
             height: 36px;
@@ -126,7 +124,7 @@
             transform: scale(1.05);
         }
 
-        /* 2. Canvas Playing Arena */
+        /* Arena Container */
         #arenaContainer {
             position: relative;
             width: 100%;
@@ -140,18 +138,18 @@
         }
 
         canvas {
-            border: 2px solid var(--neon-cyan);
+            border: 2.5px solid rgba(34, 197, 94, 0.7);
             border-radius: 18px;
             box-shadow: 
-                0 0 25px rgba(0, 243, 255, 0.45),
+                0 0 25px rgba(34, 197, 94, 0.35),
                 0 0 60px rgba(0, 243, 255, 0.15),
-                inset 0 0 25px rgba(0, 243, 255, 0.08);
-            background: #030408;
+                inset 0 0 25px rgba(34, 197, 94, 0.08);
+            background: #04060a;
             display: block;
             touch-action: none;
         }
 
-        /* Fullscreen Overlay (Start / Game Over) */
+        /* Fullscreen Overlay Screens */
         .overlay {
             position: absolute;
             inset: 0;
@@ -159,7 +157,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: radial-gradient(circle at center, rgba(8, 12, 24, 0.94) 0%, rgba(3, 4, 8, 0.98) 100%);
+            background: radial-gradient(circle at center, rgba(10, 16, 30, 0.95) 0%, rgba(3, 5, 10, 0.98) 100%);
             backdrop-filter: blur(14px);
             border-radius: 18px;
             z-index: 30;
@@ -175,9 +173,9 @@
 
         .tag-pill {
             display: inline-block;
-            background: rgba(255, 0, 119, 0.15);
-            border: 1px solid rgba(255, 0, 119, 0.4);
-            color: #ff5599;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #4ade80;
             font-size: 0.8rem;
             padding: 4px 14px;
             border-radius: 20px;
@@ -193,27 +191,27 @@
             font-weight: 800;
             margin-bottom: 6px;
             letter-spacing: 0.5px;
-            background: linear-gradient(135deg, #00f3ff 0%, #ff0077 55%, #ffe600 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #00f3ff 50%, #ffe600 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.65));
+            filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.65));
             animation: glowCycle 3s infinite alternate;
         }
 
         @keyframes glowCycle {
-            0% { filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 0, 119, 0.3)); }
-            100% { filter: drop-shadow(0 0 25px rgba(255, 0, 119, 0.8)) drop-shadow(0 0 45px rgba(0, 243, 255, 0.5)); }
+            0% { filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.6)) drop-shadow(0 0 30px rgba(0, 243, 255, 0.3)); }
+            100% { filter: drop-shadow(0 0 25px rgba(0, 243, 255, 0.8)) drop-shadow(0 0 45px rgba(34, 197, 94, 0.5)); }
         }
 
         .game-sub {
             font-family: 'Hind Siliguri', sans-serif;
-            color: #a0aec0;
-            font-size: 1.05rem;
+            color: #cbd5e1;
+            font-size: 1.1rem;
             margin-bottom: 26px;
+            font-weight: 600;
         }
 
-        /* Shiny Neon CTA Button */
         .neon-btn {
             position: relative;
             padding: 15px 48px;
@@ -226,9 +224,9 @@
             border: none;
             border-radius: 35px;
             cursor: pointer;
-            background: linear-gradient(135deg, #00f3ff, #8b00ff, #ff0077);
+            background: linear-gradient(135deg, #22c55e, #00f3ff, #10b981);
             background-size: 200% 200%;
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.5), 0 0 50px rgba(139, 0, 255, 0.35);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.5), 0 0 50px rgba(0, 243, 255, 0.35);
             transition: all 0.2s ease;
             overflow: hidden;
             animation: gradMove 4s ease infinite;
@@ -240,26 +238,9 @@
             100% { background-position: 0% 50%; }
         }
 
-        .neon-btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transform: rotate(30deg);
-            animation: lightShine 3s infinite;
-        }
-
-        @keyframes lightShine {
-            0% { transform: translateX(-100%) rotate(30deg); }
-            40%, 100% { transform: translateX(100%) rotate(30deg); }
-        }
-
         .neon-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 35px rgba(0, 243, 255, 0.8), 0 0 70px rgba(255, 0, 119, 0.5);
+            box-shadow: 0 0 35px rgba(34, 197, 94, 0.8), 0 0 70px rgba(0, 243, 255, 0.5);
         }
 
         .neon-btn:active {
@@ -270,20 +251,21 @@
             display: flex;
             gap: 12px;
             margin-top: 24px;
-            font-size: 0.82rem;
-            color: #718096;
+            font-size: 0.85rem;
+            color: #94a3b8;
             flex-wrap: wrap;
             justify-content: center;
+            font-weight: 600;
         }
 
         .hint-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 5px 12px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* 3. Bottom Ergonomic D-Pad */
+        /* Bottom Dedicated D-Pad */
         #controlsSection {
             width: 100%;
             display: flex;
@@ -302,26 +284,26 @@
         }
 
         .dpad-key {
-            background: rgba(14, 20, 36, 0.85);
-            border: 1.5px solid rgba(0, 243, 255, 0.35);
+            background: rgba(14, 20, 36, 0.9);
+            border: 1.5px solid rgba(34, 197, 94, 0.45);
             border-radius: 14px;
-            color: var(--neon-cyan);
+            color: #4ade80;
             font-size: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             backdrop-filter: blur(8px);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 12px rgba(0, 243, 255, 0.15);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 12px rgba(34, 197, 94, 0.2);
             transition: all 0.1s ease;
             touch-action: manipulation;
         }
 
         .dpad-key:active, .dpad-key.active {
-            background: rgba(0, 243, 255, 0.3);
+            background: rgba(34, 197, 94, 0.35);
             border-color: #fff;
             color: #fff;
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.8);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.8);
             transform: scale(0.92);
         }
 
@@ -357,10 +339,10 @@
     </style>
 </head>
 <body>
-    <div class="cyber-grid-bg"></div>
+    <div class="ambient-grid"></div>
 
     <div id="gameApp">
-        <!-- 1. Sleek Floating Top HUD -->
+        <!-- Top HUD -->
         <div class="top-hud">
             <div class="hud-stat">
                 <span style="color: var(--neon-cyan);">⚡</span>
@@ -378,15 +360,15 @@
             </div>
         </div>
 
-        <!-- 2. Playing Arena Canvas -->
+        <!-- Arena Canvas -->
         <div id="arenaContainer">
             <canvas id="gameCanvas"></canvas>
 
             <!-- Start Screen Overlay -->
             <div id="startScreen" class="overlay">
-                <div class="tag-pill">CYBERPUNK ARCADE</div>
+                <div class="tag-pill">REALISTIC VIPER EDITION</div>
                 <h1 class="game-title">Ex-এর চক্করে</h1>
-                <p class="game-sub">সব মায়া আর ফাঁদ এড়িয়ে সামনে এগিয়ে যান 💔</p>
+                <p class="game-sub">বাস্তব সাপের সাথে সব মায়া ও ফাঁদ এড়িয়ে এগিয়ে যান 🐍</p>
                 <button id="startBtn" class="neon-btn">START GAME</button>
                 <div class="hint-bar">
                     <div class="hint-item">📱 মোবাইল: নিচের বাটন অথবা স্ক্রিনে সোয়াইপ</div>
@@ -401,11 +383,11 @@
                 <p class="game-sub">আপনি আবার মায়ায় আটকে গেলেন!</p>
 
                 <div style="display: flex; gap: 18px; margin: 12px 0 24px 0;">
-                    <div class="hud-stat" style="background: rgba(255, 255, 255, 0.05); padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(0, 243, 255, 0.3);">
+                    <div class="hud-stat" style="background: rgba(255, 255, 255, 0.08); padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(0, 243, 255, 0.4);">
                         <span>SCORE:</span>
                         <span id="finalScore" class="hud-score" style="font-size: 1.3rem;">0</span>
                     </div>
-                    <div class="hud-stat" style="background: rgba(255, 255, 255, 0.05); padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(255, 230, 0, 0.3);">
+                    <div class="hud-stat" style="background: rgba(255, 255, 255, 0.08); padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(255, 230, 0, 0.4);">
                         <span>BEST:</span>
                         <span id="finalBest" class="hud-best" style="font-size: 1.3rem;">0</span>
                     </div>
@@ -415,7 +397,7 @@
             </div>
         </div>
 
-        <!-- 3. Bottom Dedicated D-Pad (Never overlaps playing canvas!) -->
+        <!-- Dedicated Bottom D-Pad -->
         <div id="controlsSection">
             <div class="dpad-container">
                 <button class="dpad-key key-up" id="btnUp" aria-label="Up">▲</button>
@@ -440,7 +422,7 @@
         const restartBtn = document.getElementById('restartBtn');
         const soundToggle = document.getElementById('soundToggle');
 
-        // Bengali toxic life traps
+        // Bengali Toxic Themes
         const themes = [
             "সময় নষ্ট", "টাকা নষ্ট", "মানসিক শান্তি নষ্ট", "মাথা খারাপ", "ফোকাস নষ্ট",
             "বিশ্বাস নষ্ট", "আবেগ নিয়ে খেলা", "ঘুম নষ্ট", "পড়াশোনা নষ্ট", "ক্যারিয়ার ক্ষতি",
@@ -451,9 +433,9 @@
         let gameRunning = false;
         let score = 0;
         let highScore = parseInt(localStorage.getItem('ex_chokkore_best') || '0', 10);
-        let cellSize = 22;
-        let cols = 22;
-        let rows = 22;
+        let cellSize = 24;
+        let cols = 20;
+        let rows = 20;
         let snake = [];
         let direction = { x: 1, y: 0 };
         let nextDirection = { x: 1, y: 0 };
@@ -493,7 +475,7 @@
                 if (type === 'eat') {
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(540, actx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(900, actx.currentTime + 0.12);
+                    osc.frequency.exponentialRampToValueAtTime(920, actx.currentTime + 0.12);
                     gain.gain.setValueAtTime(0.2, actx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, actx.currentTime + 0.12);
                     osc.start(actx.currentTime);
@@ -540,7 +522,7 @@
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
                     color: color,
-                    size: 2 + Math.random() * 3,
+                    size: 2.5 + Math.random() * 3,
                     alpha: 1,
                     decay: 0.025 + Math.random() * 0.03
                 });
@@ -571,13 +553,12 @@
             }
         }
 
-        // Responsive Canvas Setup
+        // Responsive Canvas
         function resizeCanvas() {
             const width = arenaContainer.clientWidth;
             const height = arenaContainer.clientHeight;
 
-            // Pick comfortable cell size
-            cellSize = Math.max(18, Math.min(26, Math.floor(Math.min(width, height) / 20)));
+            cellSize = Math.max(20, Math.min(28, Math.floor(Math.min(width, height) / 18)));
             cols = Math.floor(width / cellSize);
             rows = Math.floor(height / cellSize);
 
@@ -592,7 +573,8 @@
             snake = [
                 { x: startX, y: startY },
                 { x: startX - 1, y: startY },
-                { x: startX - 2, y: startY }
+                { x: startX - 2, y: startY },
+                { x: startX - 3, y: startY }
             ];
             direction = { x: 1, y: 0 };
             nextDirection = { x: 1, y: 0 };
@@ -605,7 +587,7 @@
 
         function generateFood() {
             food = [];
-            const count = Math.min(5, Math.max(3, Math.floor((cols * rows) / 90)));
+            const count = Math.min(4, Math.max(3, Math.floor((cols * rows) / 95)));
             const usedThemes = new Set();
 
             for (let i = 0; i < count; i++) {
@@ -617,13 +599,15 @@
                 } while (usedThemes.has(theme) && attempts < 25);
                 usedThemes.add(theme);
 
-                const hue = Math.floor(Math.random() * 360);
-                const color = `hsl(${hue}, 100%, 60%)`;
+                // Vibrant high-visibility colors
+                const palette = ['#ff0055', '#00f3ff', '#ffe600', '#ff8800', '#a855f7'];
+                const color = palette[i % palette.length];
 
                 for (let retry = 0; retry < 60; retry++) {
+                    // Keep away from the very edge so badges never get cut off
                     const candidate = {
-                        x: Math.floor(Math.random() * (cols - 2)) + 1,
-                        y: Math.floor(Math.random() * (rows - 2)) + 1,
+                        x: Math.floor(Math.random() * (cols - 4)) + 2,
+                        y: Math.floor(Math.random() * (rows - 4)) + 2,
                         color: color,
                         name: theme
                     };
@@ -637,109 +621,298 @@
             }
         }
 
-        function drawSnake() {
-            const time = Date.now();
+        // ============================================
+        // REALISTIC SNAKE RENDERING WITH "EX" ON HEAD
+        // ============================================
+        function drawRealisticSnake() {
+            if (snake.length === 0) return;
 
-            snake.forEach((segment, index) => {
-                const px = segment.x * cellSize;
-                const py = segment.y * cellSize;
+            // 1. Soft 3D drop shadow underneath snake
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+            for (let i = snake.length - 1; i >= 0; i--) {
+                const seg = snake[i];
+                const px = seg.x * cellSize + cellSize / 2;
+                const py = seg.y * cellSize + cellSize / 2 + 4;
+                const r = (cellSize / 2) * (1 - (i / snake.length) * 0.45);
+                ctx.beginPath();
+                ctx.arc(px, py, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
 
-                const hue = (time / 12 + index * 14) % 360;
+            // 2. Realistic Body Segments with Scales & Tapering Tail
+            for (let i = snake.length - 1; i > 0; i--) {
+                const seg = snake[i];
+                const prev = snake[i - 1];
+                const px = seg.x * cellSize + cellSize / 2;
+                const py = seg.y * cellSize + cellSize / 2;
+                const prevX = prev.x * cellSize + cellSize / 2;
+                const prevY = prev.y * cellSize + cellSize / 2;
+
+                const isWrapped = Math.abs(seg.x - prev.x) > 1 || Math.abs(seg.y - prev.y) > 1;
+                const t = i / snake.length; // 0 at head, 1 at tail
+                const radius = (cellSize / 2) * (1.1 - t * 0.45);
+
                 ctx.save();
+                // 1. Draw segment scale circle
+                const segGrad = ctx.createRadialGradient(px, py, radius * 0.2, px, py, radius);
+                if (i % 2 === 0) {
+                    segGrad.addColorStop(0, '#4ade80');
+                    segGrad.addColorStop(0.6, '#22c55e');
+                    segGrad.addColorStop(1, '#15803d');
+                } else {
+                    segGrad.addColorStop(0, '#22c55e');
+                    segGrad.addColorStop(0.6, '#16a34a');
+                    segGrad.addColorStop(1, '#0e6934');
+                }
+                ctx.fillStyle = segGrad;
+                ctx.beginPath();
+                ctx.arc(px, py, radius, 0, Math.PI * 2);
+                ctx.fill();
 
-                if (index === 0) {
-                    // Head: Vibrant Cyber Glow
-                    ctx.shadowColor = '#00f3ff';
-                    ctx.shadowBlur = 18;
-
-                    const headGrad = ctx.createRadialGradient(
-                        px + cellSize / 2, py + cellSize / 2, 2,
-                        px + cellSize / 2, py + cellSize / 2, cellSize / 2
-                    );
-                    headGrad.addColorStop(0, '#ffffff');
-                    headGrad.addColorStop(0.4, '#00f3ff');
-                    headGrad.addColorStop(1, '#0066cc');
-
-                    ctx.fillStyle = headGrad;
+                // 2. Connect with previous segment if adjacent
+                if (!isWrapped) {
                     ctx.beginPath();
-                    ctx.roundRect(px + 1, py + 1, cellSize - 2, cellSize - 2, 7);
+                    ctx.lineWidth = radius * 2;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.strokeStyle = segGrad;
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(prevX, prevY);
+                    ctx.stroke();
+                }
+
+                // Diamond Viper Back Markings
+                if (i % 2 === 1 && radius > 5) {
+                    ctx.fillStyle = '#fde047';
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, radius * 0.38, radius * 0.52, 0, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Glowing "EX" Label
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = `900 ${Math.floor(cellSize * 0.65)}px 'Orbitron', 'Outfit', sans-serif`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.shadowColor = '#00f3ff';
-                    ctx.shadowBlur = 12;
-                    ctx.fillText('EX', px + cellSize / 2, py + cellSize / 2);
-                } else {
-                    // Body Segments: Multi-Color Gradient
-                    const alpha = Math.max(0.4, 1 - (index / snake.length) * 0.5);
-                    ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
-                    ctx.shadowBlur = 8;
-                    ctx.globalAlpha = alpha;
-
-                    const bodyGrad = ctx.createLinearGradient(px, py, px + cellSize, py + cellSize);
-                    bodyGrad.addColorStop(0, `hsl(${hue}, 100%, 75%)`);
-                    bodyGrad.addColorStop(1, `hsl(${hue}, 100%, 45%)`);
-
-                    ctx.fillStyle = bodyGrad;
+                    ctx.fillStyle = '#052e16';
                     ctx.beginPath();
-                    ctx.roundRect(px + 1.5, py + 1.5, cellSize - 3, cellSize - 3, 5);
+                    ctx.arc(px, py, radius * 0.22, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
                 ctx.restore();
-            });
+            }
+
+            // 3. Realistic Snake Head (snake[0])
+            const head = snake[0];
+            const hx = head.x * cellSize + cellSize / 2;
+            const hy = head.y * cellSize + cellSize / 2;
+
+            let angle = 0;
+            if (direction.x === 1) angle = 0;
+            else if (direction.x === -1) angle = Math.PI;
+            else if (direction.y === 1) angle = Math.PI / 2;
+            else if (direction.y === -1) angle = -Math.PI / 2;
+
+            ctx.save();
+            ctx.translate(hx, hy);
+            ctx.rotate(angle);
+
+            const hr = cellSize * 0.72; // Realistic head dimension
+
+            // Animated Red Forked Tongue
+            const tonguePhase = Math.sin(Date.now() / 110);
+            if (tonguePhase > 0.1) {
+                const tongueLen = hr * (0.85 + tonguePhase * 0.55);
+                ctx.save();
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 2.5;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(hr * 0.85, 0);
+                ctx.lineTo(hr * 0.85 + tongueLen * 0.7, 0);
+                // Forks
+                ctx.lineTo(hr * 0.85 + tongueLen, -tongueLen * 0.28);
+                ctx.moveTo(hr * 0.85 + tongueLen * 0.7, 0);
+                ctx.lineTo(hr * 0.85 + tongueLen, tongueLen * 0.28);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Realistic Triangular Viper Head Contour
+            ctx.beginPath();
+            ctx.moveTo(hr * 0.95, 0); // Snout tip
+            // Top jaw / cheek flare
+            ctx.bezierCurveTo(hr * 0.65, -hr * 0.55, -hr * 0.15, -hr * 0.8, -hr * 0.65, -hr * 0.48);
+            // Neck connection
+            ctx.bezierCurveTo(-hr * 0.85, -hr * 0.2, -hr * 0.85, hr * 0.2, -hr * 0.65, hr * 0.48);
+            // Bottom jaw / cheek flare
+            ctx.bezierCurveTo(-hr * 0.15, hr * 0.8, hr * 0.65, hr * 0.55, hr * 0.95, 0);
+            ctx.closePath();
+
+            // Head scale shading
+            const headGrad = ctx.createRadialGradient(0, 0, hr * 0.2, 0, 0, hr);
+            headGrad.addColorStop(0, '#4ade80');
+            headGrad.addColorStop(0.5, '#22c55e');
+            headGrad.addColorStop(1, '#052e16');
+            ctx.fillStyle = headGrad;
+            ctx.fill();
+
+            ctx.strokeStyle = '#86efac';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Nostrils
+            ctx.fillStyle = '#052e16';
+            ctx.beginPath();
+            ctx.arc(hr * 0.78, -hr * 0.16, 1.4, 0, Math.PI * 2);
+            ctx.arc(hr * 0.78, hr * 0.16, 1.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Venomous Golden Viper Eyes with Slit Pupil
+            const eyeX = hr * 0.28;
+            const eyeY = hr * 0.48;
+
+            function drawEye(ey) {
+                ctx.save();
+                // Eye contour shadow
+                ctx.fillStyle = '#022c22';
+                ctx.beginPath();
+                ctx.ellipse(eyeX, ey, hr * 0.26, hr * 0.19, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Amber / Gold Iris
+                const iris = ctx.createRadialGradient(eyeX, ey, 1, eyeX, ey, hr * 0.22);
+                iris.addColorStop(0, '#fef08a');
+                iris.addColorStop(0.65, '#eab308');
+                iris.addColorStop(1, '#9a3412');
+                ctx.fillStyle = iris;
+                ctx.beginPath();
+                ctx.ellipse(eyeX, ey, hr * 0.23, hr * 0.16, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Vertical Slit Pupil
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.ellipse(eyeX, ey, hr * 0.06, hr * 0.15, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Specular Light Dot
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(eyeX - 1.2, ey - 1.2, 1.2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            drawEye(-eyeY);
+            drawEye(eyeY);
+
+            // ============================================
+            // HIGH-CONTRAST "EX" EMBLEM ON THE HEAD
+            // ============================================
+            ctx.save();
+            const badgeW = hr * 0.85;
+            const badgeH = hr * 0.7;
+            const badgeX = -hr * 0.42;
+            const badgeY = -badgeH / 2;
+
+            // Plate Backdrop with Neon Border
+            ctx.fillStyle = '#060a14';
+            ctx.strokeStyle = '#00f3ff';
+            ctx.lineWidth = 2;
+            ctx.shadowColor = '#00f3ff';
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 5);
+            ctx.fill();
+            ctx.stroke();
+
+            // Crisp Glowing "EX" Text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `900 ${Math.floor(hr * 0.56)}px 'Orbitron', 'Outfit', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = '#00f3ff';
+            ctx.shadowBlur = 10;
+            ctx.fillText('EX', badgeX + badgeW / 2, 0);
+            ctx.restore();
+
+            ctx.restore();
         }
 
+        // ============================================
+        // FOOD RENDERING WITH ULTRA-VISIBLE TEXT BADGES
+        // ============================================
         function drawFood() {
             const time = Date.now();
-            const pulse = Math.sin(time / 180) * 1.5;
+            const pulse = Math.sin(time / 160) * 2;
 
             food.forEach(item => {
                 const px = item.x * cellSize + cellSize / 2;
                 const py = item.y * cellSize + cellSize / 2;
-                const radius = Math.max(4, cellSize / 2 - 3 + pulse);
+                const radius = Math.max(5, cellSize / 2 - 3 + pulse);
 
                 ctx.save();
                 ctx.shadowColor = item.color;
-                ctx.shadowBlur = 18;
+                ctx.shadowBlur = 20;
 
-                // Glowing Food Orb
+                // Glowing 3D Orb
                 const grad = ctx.createRadialGradient(px, py, 1, px, py, radius);
                 grad.addColorStop(0, '#ffffff');
-                grad.addColorStop(0.45, item.color);
-                grad.addColorStop(1, 'rgba(0,0,0,0.85)');
+                grad.addColorStop(0.4, item.color);
+                grad.addColorStop(1, 'rgba(0,0,0,0.9)');
 
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(px, py, radius, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Bengali Food Label Badge
-                const fontSize = Math.max(11, Math.floor(cellSize * 0.55));
-                ctx.font = `700 ${fontSize}px 'Hind Siliguri', sans-serif`;
-                ctx.textAlign = 'center';
-
-                const textY = item.y <= 1 ? py + radius + 14 : py - radius - 5;
-                ctx.textBaseline = 'middle';
-
-                // Subtle text backdrop pill for 100% legibility
-                const metrics = ctx.measureText(item.name);
-                const textWidth = metrics.width;
-                ctx.fillStyle = 'rgba(6, 9, 18, 0.85)';
-                ctx.shadowBlur = 0;
+                // Inner bright pulse core
+                ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.roundRect(px - textWidth / 2 - 6, textY - fontSize / 2 - 2, textWidth + 12, fontSize + 4, 6);
+                ctx.arc(px - radius * 0.25, py - radius * 0.25, radius * 0.25, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Glowing text
+                // ============================================
+                // ULTRA-VISIBLE HIGH CONTRAST BENGALI BADGE
+                // ============================================
+                const fontSize = Math.max(13, Math.floor(cellSize * 0.65));
+                ctx.font = `800 ${fontSize}px 'Hind Siliguri', sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                const textY = item.y <= 1 ? py + radius + 16 : py - radius - 16;
+                const metrics = ctx.measureText(item.name);
+                const textWidth = metrics.width;
+                const padX = 10;
+                const padY = 5;
+                const boxW = textWidth + padX * 2;
+                const boxH = fontSize + padY * 2;
+                const boxX = px - boxW / 2;
+                const boxY = textY - boxH / 2;
+
+                // 1. Solid High-Contrast Dark Badge Background
+                ctx.save();
+                ctx.fillStyle = 'rgba(6, 8, 16, 0.96)';
+                ctx.strokeStyle = item.color;
+                ctx.lineWidth = 2.2;
+                ctx.shadowColor = item.color;
+                ctx.shadowBlur = 14;
+                ctx.beginPath();
+                ctx.roundRect(boxX, boxY, boxW, boxH, 8);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+
+                // 2. Black outline around text for guaranteed 100% legibility
+                ctx.save();
+                ctx.lineWidth = 3.5;
+                ctx.strokeStyle = '#000000';
+                ctx.strokeText(item.name, px, textY);
+
+                // 3. Crisp Bold White Text
                 ctx.fillStyle = '#ffffff';
                 ctx.shadowColor = item.color;
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 8;
                 ctx.fillText(item.name, px, textY);
+                ctx.restore();
 
                 ctx.restore();
             });
@@ -779,17 +952,18 @@
                 }
 
                 playSound('eat');
-                triggerHaptic(28);
+                triggerHaptic(30);
                 spawnParticles(eaten.x, eaten.y, eaten.color);
 
                 // Spawn Replacement Food
                 const theme = themes[Math.floor(Math.random() * themes.length)];
-                const hue = Math.floor(Math.random() * 360);
-                const color = `hsl(${hue}, 100%, 60%)`;
+                const palette = ['#ff0055', '#00f3ff', '#ffe600', '#ff8800', '#a855f7'];
+                const color = palette[Math.floor(Math.random() * palette.length)];
+
                 for (let retry = 0; retry < 60; retry++) {
                     const candidate = {
-                        x: Math.floor(Math.random() * (cols - 2)) + 1,
-                        y: Math.floor(Math.random() * (rows - 2)) + 1,
+                        x: Math.floor(Math.random() * (cols - 4)) + 2,
+                        y: Math.floor(Math.random() * (rows - 4)) + 2,
                         color: color,
                         name: theme
                     };
@@ -827,11 +1001,11 @@
             }
 
             // Clear Background
-            ctx.fillStyle = '#030408';
+            ctx.fillStyle = '#04060a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Cyber Arena Grid Lines
-            ctx.strokeStyle = 'rgba(0, 243, 255, 0.035)';
+            // Subtle Cyber Grid
+            ctx.strokeStyle = 'rgba(34, 197, 94, 0.04)';
             ctx.lineWidth = 1;
             for (let x = 0; x <= canvas.width; x += cellSize) {
                 ctx.beginPath();
@@ -847,7 +1021,7 @@
             }
 
             drawFood();
-            drawSnake();
+            drawRealisticSnake();
             updateAndDrawParticles();
             requestAnimationFrame(gameLoop);
         }
