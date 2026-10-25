@@ -3,338 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ex-এর চক্করে | Real Snake Arcade</title>
+    <title>Ex-এর চক্করে | Cartoon Snake Arcade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@600;700;800&family=Orbitron:wght@700;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        :root {
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff0077;
-            --neon-yellow: #ffe600;
-            --snake-green: #22c55e;
-            --bg-void: #06070c;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+        :root { --g:#6fd23a; --gd:#2b7d1a; --gdd:#1d5c10; --o:#f26b2a; --od:#c24510; --r:#e0242f; --rd:#9c1020; --cream:#fff8e1; --br:#4a2a0a; --neon-cyan:#f26b2a;
+            --out: -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff, 3px 3px 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff; }
         body {
-            background-color: var(--bg-void);
-            background-image: 
-                radial-gradient(circle at 50% 10%, rgba(34, 197, 94, 0.12) 0%, transparent 60%),
-                radial-gradient(circle at 85% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 15% 85%, rgba(255, 0, 119, 0.08) 0%, transparent 50%);
-            font-family: 'Outfit', 'Hind Siliguri', sans-serif;
-            color: #fff;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            min-height: 100dvh;
-            touch-action: none;
+            background: radial-gradient(circle at 50% 0%, #ffe680 0%, transparent 55%), linear-gradient(165deg, #ffd43b 0%, #ffb300 55%, #ff9100 100%);
+            background-color: #ffb300; font-family: 'Fredoka', 'Hind Siliguri', sans-serif; color: var(--br);
+            overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; touch-action: none;
         }
-
-        .ambient-grid {
-            position: fixed;
-            inset: 0;
-            background-size: 38px 38px;
-            background-image: 
-                linear-gradient(to right, rgba(0, 243, 255, 0.025) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 243, 255, 0.025) 1px, transparent 1px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
+        .ambient-grid { position: fixed; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.3) 2.5px, transparent 3px); background-size: 36px 36px; pointer-events: none; z-index: 0; }
         #gameApp {
-            position: relative;
-            width: 100%;
-            max-width: 680px;
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
-            z-index: 2;
+            position: relative; width: 100%; max-width: 680px; height: 100vh; height: 100dvh;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            padding: calc(10px + env(safe-area-inset-top, 0px)) 14px calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 2;
         }
-
-        /* Top HUD */
         .top-hud {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 16px;
-            background: rgba(10, 15, 30, 0.85);
-            border: 1.5px solid rgba(0, 243, 255, 0.35);
-            border-radius: 30px;
-            backdrop-filter: blur(14px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 243, 255, 0.15);
-            margin-bottom: 6px;
-            z-index: 10;
+            width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 16px;
+            background: var(--cream); border: 3px solid var(--gd); border-radius: 30px;
+            box-shadow: 0 5px 0 var(--gdd), 0 10px 18px rgba(120,60,0,0.25); margin-bottom: 10px; z-index: 10;
         }
-
-        .hud-stat {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Orbitron', 'Outfit', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .hud-score {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        .hud-best {
-            color: var(--neon-yellow);
-            text-shadow: 0 0 10px var(--neon-yellow);
-        }
-
+        .hud-stat { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
+        .hud-score { color: var(--r); }
+        .hud-best { color: var(--gd); }
         .hud-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 1.05rem;
+            background: #fff; border: 2.5px solid var(--gd); border-radius: 50%; width: 38px; height: 38px; color: var(--br);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.05rem; box-shadow: 0 3px 0 var(--gdd); transition: transform 0.1s;
         }
-
-        .hud-btn:hover {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 12px var(--neon-cyan);
-            transform: scale(1.05);
-        }
-
-        /* Arena Container */
-        #arenaContainer {
-            position: relative;
-            width: 100%;
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 0;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
+        .hud-btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--gdd); }
+        #arenaContainer { position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; min-height: 0; }
         canvas {
-            border: 2.5px solid rgba(34, 197, 94, 0.7);
-            border-radius: 18px;
-            box-shadow: 
-                0 0 25px rgba(34, 197, 94, 0.35),
-                0 0 60px rgba(0, 243, 255, 0.15),
-                inset 0 0 25px rgba(34, 197, 94, 0.08);
-            background: #04060a;
-            display: block;
-            touch-action: none;
+            border: 4px solid var(--gd); border-radius: 18px; background: #ffd84d; display: block; touch-action: none;
+            box-shadow: 0 6px 0 var(--gdd), 0 14px 26px rgba(120,60,0,0.3);
         }
-
-        /* Fullscreen Overlay Screens */
         .overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, rgba(10, 16, 30, 0.95) 0%, rgba(3, 5, 10, 0.98) 100%);
-            backdrop-filter: blur(14px);
-            border-radius: 18px;
-            z-index: 30;
-            padding: 24px;
-            text-align: center;
-            animation: popIn 0.25s ease-out;
+            position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: radial-gradient(circle at 50% 25%, rgba(255,240,170,0.97) 0%, rgba(255,196,40,0.97) 70%, rgba(255,160,0,0.98) 100%);
+            border: 4px solid var(--gd); border-radius: 22px; box-shadow: 0 6px 0 var(--gdd); z-index: 30; padding: 20px; text-align: center; animation: popIn 0.25s ease-out;
         }
-
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
+        @keyframes popIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-6px); } }
         .tag-pill {
-            display: inline-block;
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            color: #4ade80;
-            font-size: 0.8rem;
-            padding: 4px 14px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
+            display: inline-block; background: var(--o); border: 2px solid var(--od); color: #fff; box-shadow: 0 3px 0 var(--od);
+            font-size: 0.78rem; padding: 4px 14px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 1.5px; font-weight: 700;
         }
-
         .game-title {
-            font-family: 'Hind Siliguri', 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-            background: linear-gradient(135deg, #22c55e 0%, #00f3ff 50%, #ffe600 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.65));
-            animation: glowCycle 3s infinite alternate;
+            font-family: 'Hind Siliguri', 'Fredoka', sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 10px; line-height: 1.25;
+            color: #3fb41f; text-shadow: var(--out), 0 8px 0 var(--gdd); animation: bob 2.2s ease-in-out infinite alternate;
         }
-
-        @keyframes glowCycle {
-            0% { filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.6)) drop-shadow(0 0 30px rgba(0, 243, 255, 0.3)); }
-            100% { filter: drop-shadow(0 0 25px rgba(0, 243, 255, 0.8)) drop-shadow(0 0 45px rgba(34, 197, 94, 0.5)); }
-        }
-
-        .game-sub {
-            font-family: 'Hind Siliguri', sans-serif;
-            color: #cbd5e1;
-            font-size: 1.1rem;
-            margin-bottom: 26px;
-            font-weight: 600;
-        }
-
+        .game-sub { font-family: 'Hind Siliguri', sans-serif; color: var(--br); font-size: 1.1rem; margin-bottom: 26px; font-weight: 700; }
         .neon-btn {
-            position: relative;
-            padding: 15px 48px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: #fff;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 35px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #22c55e, #00f3ff, #10b981);
-            background-size: 200% 200%;
-            box-shadow: 0 0 25px rgba(34, 197, 94, 0.5), 0 0 50px rgba(0, 243, 255, 0.35);
-            transition: all 0.2s ease;
-            overflow: hidden;
-            animation: gradMove 4s ease infinite;
+            padding: 14px 44px; font-family: 'Fredoka', sans-serif; font-size: 1.25rem; font-weight: 700; letter-spacing: 1.5px; color: #fff;
+            text-shadow: 0 2px 0 rgba(0,0,0,0.25); border: 3px solid var(--gd); border-radius: 40px; cursor: pointer;
+            background: linear-gradient(180deg, #8ae24f, #5cc22c); box-shadow: 0 6px 0 var(--gdd), 0 12px 18px rgba(120,60,0,0.3); transition: transform 0.1s, box-shadow 0.1s;
         }
-
-        @keyframes gradMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .neon-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 35px rgba(34, 197, 94, 0.8), 0 0 70px rgba(0, 243, 255, 0.5);
-        }
-
-        .neon-btn:active {
-            transform: scale(0.96);
-        }
-
-        .hint-bar {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-            font-size: 0.85rem;
-            color: #94a3b8;
-            flex-wrap: wrap;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .hint-item {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 6px 14px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Bottom Dedicated D-Pad */
-        #controlsSection {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 0 2px 0;
-            z-index: 10;
-        }
-
-        .dpad-container {
-            display: grid;
-            grid-template-columns: repeat(3, 62px);
-            grid-template-rows: repeat(2, 50px);
-            gap: 10px;
-        }
-
+        #restartBtn { background: linear-gradient(180deg, #ff9a52, #f26b2a); border-color: var(--od); box-shadow: 0 6px 0 #8f2f06, 0 12px 18px rgba(120,60,0,0.3); }
+        .neon-btn:hover { transform: translateY(-2px); }
+        .neon-btn:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--gdd); }
+        .hint-bar { display: flex; gap: 10px; margin-top: 24px; font-size: 0.85rem; color: var(--br); flex-wrap: wrap; justify-content: center; font-weight: 700; font-family: 'Hind Siliguri', sans-serif; }
+        .hint-item { background: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 16px; border: 2px solid rgba(43,125,26,0.35); }
+        #controlsSection { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 6px 0; z-index: 10; }
+        .dpad-container { display: grid; grid-template-columns: repeat(3, 62px); grid-template-rows: repeat(2, 50px); gap: 10px; }
         .dpad-key {
-            background: rgba(14, 20, 36, 0.9);
-            border: 1.5px solid rgba(34, 197, 94, 0.45);
-            border-radius: 14px;
-            color: #4ade80;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 12px rgba(34, 197, 94, 0.2);
-            transition: all 0.1s ease;
-            touch-action: manipulation;
+            background: linear-gradient(180deg, #8ae24f, #5cc22c); border: 3px solid var(--gd); border-radius: 16px; color: #fff; font-size: 1.5rem;
+            text-shadow: 0 2px 0 rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 5px 0 var(--gdd); transition: transform 0.08s, box-shadow 0.08s; touch-action: manipulation;
         }
-
-        .dpad-key:active, .dpad-key.active {
-            background: rgba(34, 197, 94, 0.35);
-            border-color: #fff;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(34, 197, 94, 0.8);
-            transform: scale(0.92);
-        }
-
+        .dpad-key:active, .dpad-key.active { transform: translateY(4px); box-shadow: 0 1px 0 var(--gdd); background: linear-gradient(180deg, #ff9a52, #f26b2a); border-color: var(--od); }
         .key-up { grid-column: 2; grid-row: 1; }
         .key-left { grid-column: 1; grid-row: 2; }
         .key-down { grid-column: 2; grid-row: 2; }
         .key-right { grid-column: 3; grid-row: 2; }
-
-        .hidden {
-            display: none !important;
-        }
-
+        .hidden { display: none !important; }
         @media (max-width: 600px) {
             .game-title { font-size: 2.2rem; }
-            .neon-btn { padding: 13px 38px; font-size: 1.1rem; }
-            .dpad-container {
-                grid-template-columns: repeat(3, 58px);
-                grid-template-rows: repeat(2, 48px);
-                gap: 8px;
-            }
+            .neon-btn { padding: 12px 36px; font-size: 1.1rem; }
+            .dpad-container { grid-template-columns: repeat(3, 58px); grid-template-rows: repeat(2, 48px); gap: 8px; }
             .dpad-key { font-size: 1.35rem; }
         }
-
         @media (min-width: 768px) {
-            #gameApp {
-                max-width: 750px;
-            }
-            .dpad-container {
-                grid-template-columns: repeat(3, 68px);
-                grid-template-rows: repeat(2, 52px);
-            }
+            #gameApp { max-width: 750px; }
+            .dpad-container { grid-template-columns: repeat(3, 68px); grid-template-rows: repeat(2, 52px); }
         }
     </style>
 </head>
@@ -342,14 +95,12 @@
     <div class="ambient-grid"></div>
 
     <div id="gameApp">
-        <!-- Top HUD -->
         <div class="top-hud">
             <div class="hud-stat">
                 <span style="color: var(--neon-cyan);">⚡</span>
                 <span>SCORE:</span>
                 <span id="scoreVal" class="hud-score">0</span>
             </div>
-
             <div style="display: flex; align-items: center; gap: 12px;">
                 <button id="soundToggle" class="hud-btn" title="সাউন্ড চালু/বন্ধ">🔊</button>
                 <div class="hud-stat">
@@ -360,44 +111,38 @@
             </div>
         </div>
 
-        <!-- Arena Canvas -->
         <div id="arenaContainer">
             <canvas id="gameCanvas"></canvas>
 
-            <!-- Start Screen Overlay -->
             <div id="startScreen" class="overlay">
-                <div class="tag-pill">REALISTIC VIPER EDITION</div>
+                <div class="tag-pill">CARTOON SNAKE EDITION</div>
                 <h1 class="game-title">Ex-এর চক্করে</h1>
-                <p class="game-sub">বাস্তব সাপের সাথে সব মায়া ও ফাঁদ এড়িয়ে এগিয়ে যান 🐍</p>
+                <p class="game-sub">কিউট সাপের সাথে সব মায়া ও ফাঁদ এড়িয়ে এগিয়ে যান 🐍</p>
                 <button id="startBtn" class="neon-btn">START GAME</button>
                 <div class="hint-bar">
-                    <div class="hint-item">📱 মোবাইল: নিচের বাটন অথবা স্ক্রিনে সোয়াইপ</div>
+                    <div class="hint-item">📱 মোবাইল: নিচের বাটন অথবা স্ক্রিনে সোয়াইপ</div>
                     <div class="hint-item">💻 কম্পিউটার: Arrow Keys / WASD</div>
                 </div>
             </div>
 
-            <!-- Game Over Screen Overlay -->
             <div id="gameOverScreen" class="overlay hidden">
-                <div class="tag-pill" style="background: rgba(255, 0, 85, 0.2); border-color: #ff0055; color: #ff0077;">GAME OVER</div>
-                <h1 class="game-title" style="background: linear-gradient(135deg, #ff0055, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ex-এর জয়! 💀</h1>
-                <p class="game-sub">আপনি আবার মায়ায় আটকে গেলেন!</p>
-
+                <div class="tag-pill" style="background: var(--r); border-color: var(--rd); box-shadow: 0 3px 0 var(--rd);">GAME OVER</div>
+                <h1 class="game-title" style="color: var(--r); text-shadow: var(--out), 0 8px 0 var(--rd);">Ex-এর জয়! 💀</h1>
+                <p class="game-sub">আপনি আবার মায়ায় আটকে গেলেন!</p>
                 <div style="display: flex; gap: 18px; margin: 12px 0 24px 0;">
-                    <div class="hud-stat" style="background: rgba(255, 255, 255, 0.08); padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(0, 243, 255, 0.4);">
+                    <div class="hud-stat" style="background: #fff; padding: 8px 20px; border-radius: 20px; border: 2px solid var(--o);">
                         <span>SCORE:</span>
                         <span id="finalScore" class="hud-score" style="font-size: 1.3rem;">0</span>
                     </div>
-                    <div class="hud-stat" style="background: rgba(255, 255, 255, 0.08); padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(255, 230, 0, 0.4);">
+                    <div class="hud-stat" style="background: #fff; padding: 8px 20px; border-radius: 20px; border: 2px solid var(--gd);">
                         <span>BEST:</span>
                         <span id="finalBest" class="hud-best" style="font-size: 1.3rem;">0</span>
                     </div>
                 </div>
-
                 <button id="restartBtn" class="neon-btn">PLAY AGAIN</button>
             </div>
         </div>
 
-        <!-- Dedicated Bottom D-Pad -->
         <div id="controlsSection">
             <div class="dpad-container">
                 <button class="dpad-key key-up" id="btnUp" aria-label="Up">▲</button>
@@ -422,42 +167,70 @@
         const restartBtn = document.getElementById('restartBtn');
         const soundToggle = document.getElementById('soundToggle');
 
-        // Bengali Toxic Themes
         const themes = [
-            "সময় নষ্ট", "টাকা নষ্ট", "মানসিক শান্তি নষ্ট", "মাথা খারাপ", "ফোকাস নষ্ট",
-            "বিশ্বাস নষ্ট", "আবেগ নিয়ে খেলা", "ঘুম নষ্ট", "পড়াশোনা নষ্ট", "ক্যারিয়ার ক্ষতি",
-            "ভবিষ্যৎ নষ্ট", "আত্মসম্মান নষ্ট", "মোটিভেশন শেষ", "বন্ধু দূরে", "মানসিক চাপ",
-            "জীবন এলোমেলো", "আশা নষ্ট", "শক্তি নষ্ট"
+            "মন খারাপ", "স্বপ্ন নষ্ট", "ধৈর্য শেষ", "সময় অপচয়",
+            "এনার্জি শেষ", "ঘুম উধাও", "শান্তি উধাও", "হাসি উধাও",
+            "মুড অফ", "রাগ বেড়ে যাওয়া", "ওভারথিংকিং", "ডিপ্রেশন",
+            "একাকিত্ব", "কান্না", "হতাশা", "অস্থিরতা",
+            "সন্দেহ বেড়ে যাওয়া", "বিশ্বাসঘাতকতা", "মিথ্যা আশা", "প্রতারণা",
+            "হৃদয় ভাঙা", "ইমোশনাল ড্যামেজ", "মাথা গরম", "ব্রেইন হ্যাং",
+            "ফোকাস অফ", "কনফিডেন্স শেষ", "সেলফ রেসপেক্ট লস", "মোটিভেশন অফ",
+            "রুটিন নষ্ট", "স্বাস্থ্য ক্ষতি", "খাবার অনিয়ম", "রাত জাগা",
+            "ব্যায়াম বন্ধ", "স্কিল শেখা বন্ধ", "লক্ষ্য হারানো", "সিদ্ধান্তহীনতা",
+            "কাজে অমনোযোগ", "রেজাল্ট খারাপ", "পরীক্ষায় ক্ষতি", "চাকরি পিছানো",
+            "টাকা উধাও", "সঞ্চয় শেষ", "গিফট খরচ", "ডেটিং খরচ",
+            "মোবাইল আসক্তি", "চ্যাটিং আসক্তি", "প্রোফাইল চেক", "লাস্ট সিন চেক",
+            "পুরোনো চ্যাট", "ছবি দেখা", "স্টকিং", "ব্লক খাওয়া",
+            "আনফলো কষ্ট", "রিপ্লাইয়ের অপেক্ষা", "সিন খাওয়া", "ঘোস্টিং",
+            "বন্ধুত্ব নষ্ট", "পরিবার অবহেলা", "সম্পর্কে ঝামেলা", "একা হয়ে যাওয়া",
+            "সময়মতো ঘুম শেষ", "সকালের ঘুম শেষ", "মনোযোগ গায়েব", "স্মৃতি তাড়া",
+            "পুরোনো ব্যথা", "নতুন ভয়", "ভুল মানুষ", "ভুল সিদ্ধান্ত",
+            "নিজেকে হারানো", "ব্যক্তিত্ব বদল", "অতিরিক্ত আশা", "অতিরিক্ত সন্দেহ",
+            "ঈর্ষা বেড়ে যাওয়া", "রাগ জমা", "অভিমান জমা", "কষ্ট জমা",
+            "হাসিখুশি ভাব শেষ", "লাইফ অফ", "ভাইব নষ্ট", "মুড সুইং",
+            "ইমোশনাল রোলারকোস্টার", "হার্টব্রেক", "লাভ লস", "ফিলিংস লস",
+            "ব্রেইন ল্যাগ", "মেমোরি ফুল", "মেন্টাল ল্যাগ", "সিস্টেম ক্র্যাশ",
+            "লাইফ বাগ", "হার্ট এরর", "লাভ ভাইরাস", "এক্স অ্যাটাক",
+            "শান্তি আনইনস্টল", "ঘুম আনইনস্টল", "সুখ ডিলিট", "টাকা ডিলিট",
+            "ভবিষ্যৎ পেন্ডিং", "ক্যারিয়ার বাফারিং", "মোটিভেশন ০%", "ব্যাটারি লো",
+            "ভাগ্য খারাপ", "কপাল পুড়া", "প্রেমে লস", "এক্সের ফাঁদ",
+            "আশা শেষ", "বিশ্বাস ০%", "ধৈর্য ০%", "পকেট খালি",
+            "মন ড্যামেজ", "হার্ট ড্যামেজ", "ইগো ড্যামেজ", "সেলফি দুঃখ",
+            "রিলস দেখে কষ্ট", "নতুন প্রেমের ভয়", "রিলেশন ফোবিয়া", "সিঙ্গেল লাইফে ফেরা"
         ];
+
+        const palette = ['#e0242f', '#f26b2a', '#8e44ad', '#1e88e5', '#2e9e3a'];
 
         let gameRunning = false;
         let score = 0;
-        let highScore = parseInt(localStorage.getItem('ex_chokkore_best') || '0', 10);
+        let highScore = 0;
+        try { highScore = parseInt(localStorage.getItem('ex_chokkore_best') || '0', 10) || 0; } catch (e) {}
         let cellSize = 24;
         let cols = 20;
         let rows = 20;
         let snake = [];
+        let prevSnake = [];
+        let renderT = 1;
         let direction = { x: 1, y: 0 };
         let nextDirection = { x: 1, y: 0 };
         let food = [];
         let particles = [];
         let soundEnabled = true;
-        let gameSpeed = 105;
+        let gameSpeed = 90;
         let lastTime = 0;
         let accumulator = 0;
+        let stepCount = 0;
 
         bestVal.textContent = highScore;
 
-        // Audio System
+        // ---------- Audio ----------
         let audioContext = null;
         function getAudioContext() {
             if (!audioContext) {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
                 if (AudioCtx) audioContext = new AudioCtx();
             }
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
+            if (audioContext && audioContext.state === 'suspended') audioContext.resume();
             return audioContext;
         }
 
@@ -466,12 +239,10 @@
             try {
                 const actx = getAudioContext();
                 if (!actx) return;
-
                 const osc = actx.createOscillator();
                 const gain = actx.createGain();
                 osc.connect(gain);
                 gain.connect(actx.destination);
-
                 if (type === 'eat') {
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(540, actx.currentTime);
@@ -506,12 +277,10 @@
         });
 
         function triggerHaptic(duration = 20) {
-            if (navigator.vibrate) {
-                try { navigator.vibrate(duration); } catch (e) {}
-            }
+            if (navigator.vibrate) { try { navigator.vibrate(duration); } catch (e) {} }
         }
 
-        // Particle Burst System
+        // ---------- Particles ----------
         function spawnParticles(x, y, color) {
             for (let i = 0; i < 18; i++) {
                 const angle = Math.random() * Math.PI * 2;
@@ -535,12 +304,7 @@
                 p.x += p.vx;
                 p.y += p.vy;
                 p.alpha -= p.decay;
-
-                if (p.alpha <= 0) {
-                    particles.splice(i, 1);
-                    continue;
-                }
-
+                if (p.alpha <= 0) { particles.splice(i, 1); continue; }
                 ctx.save();
                 ctx.globalAlpha = p.alpha;
                 ctx.shadowColor = p.color;
@@ -553,15 +317,13 @@
             }
         }
 
-        // Responsive Canvas
+        // ---------- Setup ----------
         function resizeCanvas() {
-            const width = arenaContainer.clientWidth;
-            const height = arenaContainer.clientHeight;
-
+            const width = arenaContainer.clientWidth - 14;
+            const height = arenaContainer.clientHeight - 22;
             cellSize = Math.max(20, Math.min(28, Math.floor(Math.min(width, height) / 18)));
             cols = Math.floor(width / cellSize);
             rows = Math.floor(height / cellSize);
-
             canvas.width = cols * cellSize;
             canvas.height = rows * cellSize;
         }
@@ -581,6 +343,8 @@
             score = 0;
             particles = [];
             scoreVal.textContent = '0';
+            prevSnake = snake.map(s => ({ x: s.x, y: s.y }));
+            renderT = 1;
             generateFood();
             gameRunning = true;
         }
@@ -589,7 +353,6 @@
             food = [];
             const count = Math.min(4, Math.max(3, Math.floor((cols * rows) / 95)));
             const usedThemes = new Set();
-
             for (let i = 0; i < count; i++) {
                 let theme;
                 let attempts = 0;
@@ -598,13 +361,8 @@
                     attempts++;
                 } while (usedThemes.has(theme) && attempts < 25);
                 usedThemes.add(theme);
-
-                // Vibrant high-visibility colors
-                const palette = ['#ff0055', '#00f3ff', '#ffe600', '#ff8800', '#a855f7'];
                 const color = palette[i % palette.length];
-
                 for (let retry = 0; retry < 60; retry++) {
-                    // Keep away from the very edge so badges never get cut off
                     const candidate = {
                         x: Math.floor(Math.random() * (cols - 4)) + 2,
                         y: Math.floor(Math.random() * (rows - 4)) + 2,
@@ -613,332 +371,250 @@
                     };
                     const conflict = snake.some(s => s.x === candidate.x && s.y === candidate.y) ||
                                      food.some(f => f.x === candidate.x && f.y === candidate.y);
-                    if (!conflict) {
-                        food.push(candidate);
-                        break;
-                    }
+                    if (!conflict) { food.push(candidate); break; }
                 }
             }
         }
 
+        // ---------- Interpolated positions ----------
+        function getRenderSnake() {
+            return snake.map((cur, i) => {
+                const old = prevSnake[i] || prevSnake[prevSnake.length - 1] || cur;
+                if (Math.abs(cur.x - old.x) > 1 || Math.abs(cur.y - old.y) > 1) {
+                    return { x: cur.x, y: cur.y };
+                }
+                return {
+                    x: old.x + (cur.x - old.x) * renderT,
+                    y: old.y + (cur.y - old.y) * renderT
+                };
+            });
+        }
+
         // ============================================
-        // REALISTIC SNAKE RENDERING WITH "EX" ON HEAD
+        // REALISTIC VIPER
         // ============================================
         function drawRealisticSnake() {
             if (snake.length === 0) return;
+            const c = cellSize;
+            const rs = getRenderSnake();
 
-            // 1. Soft 3D drop shadow underneath snake
-            ctx.save();
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-            for (let i = snake.length - 1; i >= 0; i--) {
-                const seg = snake[i];
-                const px = seg.x * cellSize + cellSize / 2;
-                const py = seg.y * cellSize + cellSize / 2 + 4;
-                const r = (cellSize / 2) * (1 - (i / snake.length) * 0.45);
-                ctx.beginPath();
-                ctx.arc(px, py, r, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            ctx.restore();
-
-            // 2. Realistic Body Segments with Scales & Tapering Tail
-            for (let i = snake.length - 1; i > 0; i--) {
-                const seg = snake[i];
-                const prev = snake[i - 1];
-                const px = seg.x * cellSize + cellSize / 2;
-                const py = seg.y * cellSize + cellSize / 2;
-                const prevX = prev.x * cellSize + cellSize / 2;
-                const prevY = prev.y * cellSize + cellSize / 2;
-
-                const isWrapped = Math.abs(seg.x - prev.x) > 1 || Math.abs(seg.y - prev.y) > 1;
-                const t = i / snake.length; // 0 at head, 1 at tail
-                const radius = (cellSize / 2) * (1.1 - t * 0.45);
-
-                ctx.save();
-                // 1. Draw segment scale circle
-                const segGrad = ctx.createRadialGradient(px, py, radius * 0.2, px, py, radius);
-                if (i % 2 === 0) {
-                    segGrad.addColorStop(0, '#4ade80');
-                    segGrad.addColorStop(0.6, '#22c55e');
-                    segGrad.addColorStop(1, '#15803d');
-                } else {
-                    segGrad.addColorStop(0, '#22c55e');
-                    segGrad.addColorStop(0.6, '#16a34a');
-                    segGrad.addColorStop(1, '#0e6934');
+            function chaikin(p, n) {
+                for (let k = 0; k < n; k++) {
+                    const q = [p[0]];
+                    for (let i = 0; i < p.length - 1; i++) {
+                        const a = p[i], b = p[i + 1];
+                        q.push({ x: 0.75 * a.x + 0.25 * b.x, y: 0.75 * a.y + 0.25 * b.y },
+                               { x: 0.25 * a.x + 0.75 * b.x, y: 0.25 * a.y + 0.75 * b.y });
+                    }
+                    q.push(p[p.length - 1]);
+                    p = q;
                 }
-                ctx.fillStyle = segGrad;
-                ctx.beginPath();
-                ctx.arc(px, py, radius, 0, Math.PI * 2);
-                ctx.fill();
-
-                // 2. Connect with previous segment if adjacent
-                if (!isWrapped) {
-                    ctx.beginPath();
-                    ctx.lineWidth = radius * 2;
-                    ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
-                    ctx.strokeStyle = segGrad;
-                    ctx.moveTo(px, py);
-                    ctx.lineTo(prevX, prevY);
-                    ctx.stroke();
-                }
-
-                // Diamond Viper Back Markings
-                if (i % 2 === 1 && radius > 5) {
-                    ctx.fillStyle = '#fde047';
-                    ctx.beginPath();
-                    ctx.ellipse(px, py, radius * 0.38, radius * 0.52, 0, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    ctx.fillStyle = '#052e16';
-                    ctx.beginPath();
-                    ctx.arc(px, py, radius * 0.22, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                ctx.restore();
+                return p;
             }
 
-            // 3. Realistic Snake Head (snake[0])
-            const head = snake[0];
-            const hx = head.x * cellSize + cellSize / 2;
-            const hy = head.y * cellSize + cellSize / 2;
+            // 1. split into chains (screen-wrap safe)
+            const chains = [[]];
+            for (let i = 0; i < rs.length; i++) {
+                chains[chains.length - 1].push({ x: rs[i].x * c + c / 2, y: rs[i].y * c + c / 2 });
+                const nx = rs[i + 1];
+                if (nx && (Math.abs(nx.x - rs[i].x) > 1.5 || Math.abs(nx.y - rs[i].y) > 1.5)) chains.push([]);
+            }
 
-            let angle = 0;
-            if (direction.x === 1) angle = 0;
-            else if (direction.x === -1) angle = Math.PI;
-            else if (direction.y === 1) angle = Math.PI / 2;
-            else if (direction.y === -1) angle = -Math.PI / 2;
+            // 2. sample smooth path
+            const step = c * 0.16;
+            const samples = [];
+            let d = 0;
+            chains.forEach((chain) => {
+                if (chain.length === 1) {
+                    samples.push({ x: chain[0].x, y: chain[0].y, d, nx: 0, ny: 1 });
+                    return;
+                }
+                const sm = chain.length > 2 ? chaikin(chain, 3) : chain;
+                samples.push({ x: sm[0].x, y: sm[0].y, d, nx: 0, ny: 1 });
+                let rem = step;
+                for (let j = 0; j < sm.length - 1; j++) {
+                    const a = sm[j], b = sm[j + 1];
+                    const len = Math.hypot(b.x - a.x, b.y - a.y);
+                    if (len === 0) continue;
+                    const ux = (b.x - a.x) / len, uy = (b.y - a.y) / len;
+                    let s = 0;
+                    while (s + rem <= len) {
+                        s += rem;
+                        d += step;
+                        samples.push({ x: a.x + ux * s, y: a.y + uy * s, d, nx: -uy, ny: ux });
+                        rem = step;
+                    }
+                    rem -= (len - s);
+                }
+            });
+            const L = Math.max(d, 1);
 
+            // 3. radius taper
+            samples.forEach(s => {
+                const D = s.d / L;
+                let r = c * 0.47;
+                if (D < 0.12) r *= 0.82 + (D / 0.12) * 0.18;
+                const tailT = Math.max(0, (D - 0.4) / 0.6);
+                r *= 1 - 0.9 * Math.pow(tailT, 1.5);
+                s.r = Math.max(r, c * 0.05);
+            });
+            if (samples[1]) { samples[0].nx = samples[1].nx; samples[0].ny = samples[1].ny; }
+
+            // 4. cartoon drawing passes
+            const period = c * 1.55;
+            const travel = (stepCount + renderT) * c;
+            samples.forEach(s => { s.ph = ((((s.d - travel) % period) + period) % period) / period; });
+            const circ = (col, fx, fy, k, add) => {
+                ctx.fillStyle = col;
+                samples.forEach(s => { ctx.beginPath(); ctx.arc(s.x + s.r * fx, s.y + s.r * fy, s.r * k + add, 0, Math.PI * 2); ctx.fill(); });
+            };
             ctx.save();
-            ctx.translate(hx, hy);
-            ctx.rotate(angle);
-
-            const hr = cellSize * 0.72; // Realistic head dimension
-
-            // Animated Red Forked Tongue
-            const tonguePhase = Math.sin(Date.now() / 110);
-            if (tonguePhase > 0.1) {
-                const tongueLen = hr * (0.85 + tonguePhase * 0.55);
-                ctx.save();
-                ctx.strokeStyle = '#ef4444';
-                ctx.lineWidth = 2.5;
-                ctx.lineCap = 'round';
+            circ('rgba(130,60,0,0.22)', 0.18, 0.38, 1, 0);
+            circ('#2b7d1a', 0, 0, 1, 2.2);
+            circ('#5fc42c', 0, 0, 1, 0);
+            circ('#86e24e', -0.12, -0.18, 0.72, 0);
+            const slices = (col, fx, fy, k) => {
+                ctx.strokeStyle = col; ctx.lineWidth = step * 1.8; ctx.lineCap = 'butt';
                 ctx.beginPath();
-                ctx.moveTo(hr * 0.85, 0);
-                ctx.lineTo(hr * 0.85 + tongueLen * 0.7, 0);
-                // Forks
-                ctx.lineTo(hr * 0.85 + tongueLen, -tongueLen * 0.28);
-                ctx.moveTo(hr * 0.85 + tongueLen * 0.7, 0);
-                ctx.lineTo(hr * 0.85 + tongueLen, tongueLen * 0.28);
+                samples.forEach(s => {
+                    if (s.ph > 0.4 || s.r < 2.5) return;
+                    const cx = s.x + s.r * fx, cy = s.y + s.r * fy, hh = s.r * k;
+                    ctx.moveTo(cx - s.nx * hh, cy - s.ny * hh); ctx.lineTo(cx + s.nx * hh, cy + s.ny * hh);
+                });
                 ctx.stroke();
-                ctx.restore();
-            }
-
-            // Realistic Triangular Viper Head Contour
+            };
+            slices('#f26b2a', 0, 0, 0.98);
+            slices('#ff9448', -0.12, -0.18, 0.66);
+            ctx.fillStyle = '#4aa820';
+            samples.forEach(s => {
+                if (s.r > 5 && Math.abs(s.ph - 0.7) < 0.06) [-1, 1].forEach(k => {
+                    ctx.beginPath(); ctx.arc(s.x + s.nx * s.r * 0.5 * k, s.y + s.ny * s.r * 0.5 * k, s.r * 0.17, 0, Math.PI * 2); ctx.fill();
+                });
+            });
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = Math.max(1.5, c * 0.09); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
             ctx.beginPath();
-            ctx.moveTo(hr * 0.95, 0); // Snout tip
-            // Top jaw / cheek flare
-            ctx.bezierCurveTo(hr * 0.65, -hr * 0.55, -hr * 0.15, -hr * 0.8, -hr * 0.65, -hr * 0.48);
-            // Neck connection
-            ctx.bezierCurveTo(-hr * 0.85, -hr * 0.2, -hr * 0.85, hr * 0.2, -hr * 0.65, hr * 0.48);
-            // Bottom jaw / cheek flare
-            ctx.bezierCurveTo(-hr * 0.15, hr * 0.8, hr * 0.65, hr * 0.55, hr * 0.95, 0);
-            ctx.closePath();
-
-            // Head scale shading
-            const headGrad = ctx.createRadialGradient(0, 0, hr * 0.2, 0, 0, hr);
-            headGrad.addColorStop(0, '#4ade80');
-            headGrad.addColorStop(0.5, '#22c55e');
-            headGrad.addColorStop(1, '#052e16');
-            ctx.fillStyle = headGrad;
-            ctx.fill();
-
-            ctx.strokeStyle = '#86efac';
-            ctx.lineWidth = 2;
+            let pen = false, px = 0, py = 0;
+            samples.forEach(s => {
+                if (s.r < 4) { pen = false; return; }
+                const x = s.x - s.r * 0.32, y = s.y - s.r * 0.38;
+                if (pen && Math.hypot(x - px, y - py) < step * 3) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+                pen = true; px = x; py = y;
+            });
             ctx.stroke();
-
-            // Nostrils
-            ctx.fillStyle = '#052e16';
-            ctx.beginPath();
-            ctx.arc(hr * 0.78, -hr * 0.16, 1.4, 0, Math.PI * 2);
-            ctx.arc(hr * 0.78, hr * 0.16, 1.4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Venomous Golden Viper Eyes with Slit Pupil
-            const eyeX = hr * 0.28;
-            const eyeY = hr * 0.48;
-
-            function drawEye(ey) {
-                ctx.save();
-                // Eye contour shadow
-                ctx.fillStyle = '#022c22';
-                ctx.beginPath();
-                ctx.ellipse(eyeX, ey, hr * 0.26, hr * 0.19, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Amber / Gold Iris
-                const iris = ctx.createRadialGradient(eyeX, ey, 1, eyeX, ey, hr * 0.22);
-                iris.addColorStop(0, '#fef08a');
-                iris.addColorStop(0.65, '#eab308');
-                iris.addColorStop(1, '#9a3412');
-                ctx.fillStyle = iris;
-                ctx.beginPath();
-                ctx.ellipse(eyeX, ey, hr * 0.23, hr * 0.16, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Vertical Slit Pupil
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.ellipse(eyeX, ey, hr * 0.06, hr * 0.15, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Specular Light Dot
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(eyeX - 1.2, ey - 1.2, 1.2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-
-            drawEye(-eyeY);
-            drawEye(eyeY);
-
-            // ============================================
-            // HIGH-CONTRAST "EX" EMBLEM ON THE HEAD
-            // ============================================
-            ctx.save();
-            const badgeW = hr * 0.85;
-            const badgeH = hr * 0.7;
-            const badgeX = -hr * 0.42;
-            const badgeY = -badgeH / 2;
-
-            // Plate Backdrop with Neon Border
-            ctx.fillStyle = '#060a14';
-            ctx.strokeStyle = '#00f3ff';
-            ctx.lineWidth = 2;
-            ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = 12;
-            ctx.beginPath();
-            ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 5);
-            ctx.fill();
-            ctx.stroke();
-
-            // Crisp Glowing "EX" Text
-            ctx.fillStyle = '#ffffff';
-            ctx.font = `900 ${Math.floor(hr * 0.56)}px 'Orbitron', 'Outfit', sans-serif`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = 10;
-            ctx.fillText('EX', badgeX + badgeW / 2, 0);
             ctx.restore();
 
+            // 5. HEAD (big googly eyes, blush, happy open mouth)
+            const head = rs[0];
+            const hx = head.x * c + c / 2 + direction.x * c * 0.1;
+            const hy = head.y * c + c / 2 + direction.y * c * 0.1;
+            const angle = Math.atan2(direction.y, direction.x), hr = c * 0.7;
+            const ca = Math.cos(angle), sa = Math.sin(angle);
+            const eyes = [-1, 1].map(side => ({ lx: hr * 0.34, ly: side * hr * 0.5 }));
+            ctx.save();
+            ctx.translate(hx, hy); ctx.rotate(angle);
+            const tp = Math.sin(Date.now() / 140);
+            if (tp > 0) {
+                const tl = hr * (0.5 + tp * 0.9);
+                ctx.strokeStyle = '#ff3860'; ctx.lineWidth = Math.max(2.2, c * 0.11); ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(hr * 0.95, 0); ctx.lineTo(hr + tl * 0.7, 0); ctx.lineTo(hr + tl, -tl * 0.25);
+                ctx.moveTo(hr + tl * 0.7, 0); ctx.lineTo(hr + tl, tl * 0.25); ctx.stroke();
+            }
+            const hg = ctx.createRadialGradient(0, -hr * 0.25, hr * 0.1, 0, 0, hr * 1.1);
+            hg.addColorStop(0, '#b4f26e'); hg.addColorStop(0.55, '#74d83a'); hg.addColorStop(1, '#4cae22');
+            ctx.fillStyle = hg; ctx.strokeStyle = '#2b7d1a'; ctx.lineWidth = 2.6;
+            ctx.beginPath(); ctx.ellipse(hr * 0.08, 0, hr * 1.02, hr * 0.84, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = 'rgba(255,120,150,0.8)';
+            [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(hr * 0.74, sd * hr * 0.45, hr * 0.17, hr * 0.12, 0, 0, Math.PI * 2); ctx.fill(); });
+            ctx.fillStyle = '#8c0f22'; ctx.beginPath(); ctx.ellipse(hr * 0.97, 0, hr * 0.13, hr * 0.24, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ff5c7a'; ctx.beginPath(); ctx.ellipse(hr * 0.99, 0, hr * 0.07, hr * 0.13, 0, 0, Math.PI * 2); ctx.fill();
+            eyes.forEach(e => {
+                ctx.fillStyle = '#fff'; ctx.strokeStyle = '#2b7d1a'; ctx.lineWidth = 1.8;
+                ctx.beginPath(); ctx.arc(e.lx, e.ly, hr * 0.36, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(e.lx + hr * 0.1, e.ly, hr * 0.2, 0, Math.PI * 2); ctx.fill();
+            });
+            ctx.restore();
+            eyes.forEach(e => {
+                const wx = hx + (e.lx + hr * 0.1) * ca - e.ly * sa, wy = hy + (e.lx + hr * 0.1) * sa + e.ly * ca;
+                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(wx - hr * 0.08, wy - hr * 0.09, hr * 0.075, 0, Math.PI * 2); ctx.fill();
+            });
+
+            // 6. floating "EX" tag
+            ctx.save();
+            const fs = Math.max(10, Math.floor(c * 0.44));
+            ctx.font = `700 ${fs}px 'Fredoka', 'Hind Siliguri', sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            const tw = ctx.measureText('EX').width + 12, th = fs + 8;
+            const tx = Math.min(Math.max(hx, tw / 2 + 2), canvas.width - tw / 2 - 2), ty = Math.max(hy - c * 1.15, th / 2 + 2);
+            ctx.fillStyle = '#fffdf5'; ctx.strokeStyle = '#f26b2a'; ctx.lineWidth = 2;
+            ctx.shadowColor = 'rgba(120,60,0,0.35)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+            ctx.beginPath(); ctx.roundRect(tx - tw / 2, ty - th / 2, tw, th, 8); ctx.fill(); ctx.stroke();
+            ctx.shadowColor = 'transparent'; ctx.fillStyle = '#c2300f'; ctx.fillText('EX', tx, ty + 1);
             ctx.restore();
         }
 
         // ============================================
-        // FOOD RENDERING WITH ULTRA-VISIBLE TEXT BADGES
+        // FOOD
         // ============================================
         function drawFood() {
-            const time = Date.now();
-            const pulse = Math.sin(time / 160) * 2;
-
+            const pulse = Math.sin(Date.now() / 160) * 1.5;
             food.forEach(item => {
-                const px = item.x * cellSize + cellSize / 2;
-                const py = item.y * cellSize + cellSize / 2;
-                const radius = Math.max(5, cellSize / 2 - 3 + pulse);
-
-                ctx.save();
-                ctx.shadowColor = item.color;
-                ctx.shadowBlur = 20;
-
-                // Glowing 3D Orb
-                const grad = ctx.createRadialGradient(px, py, 1, px, py, radius);
-                grad.addColorStop(0, '#ffffff');
-                grad.addColorStop(0.4, item.color);
-                grad.addColorStop(1, 'rgba(0,0,0,0.9)');
-
-                ctx.fillStyle = grad;
-                ctx.beginPath();
-                ctx.arc(px, py, radius, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Inner bright pulse core
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(px - radius * 0.25, py - radius * 0.25, radius * 0.25, 0, Math.PI * 2);
-                ctx.fill();
-
-                // ============================================
-                // ULTRA-VISIBLE HIGH CONTRAST BENGALI BADGE
-                // ============================================
-                const fontSize = Math.max(13, Math.floor(cellSize * 0.65));
-                ctx.font = `800 ${fontSize}px 'Hind Siliguri', sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                const textY = item.y <= 1 ? py + radius + 16 : py - radius - 16;
-                const metrics = ctx.measureText(item.name);
-                const textWidth = metrics.width;
-                const padX = 10;
-                const padY = 5;
-                const boxW = textWidth + padX * 2;
-                const boxH = fontSize + padY * 2;
-                const boxX = px - boxW / 2;
-                const boxY = textY - boxH / 2;
-
-                // 1. Solid High-Contrast Dark Badge Background
-                ctx.save();
-                ctx.fillStyle = 'rgba(6, 8, 16, 0.96)';
-                ctx.strokeStyle = item.color;
-                ctx.lineWidth = 2.2;
-                ctx.shadowColor = item.color;
-                ctx.shadowBlur = 14;
-                ctx.beginPath();
-                ctx.roundRect(boxX, boxY, boxW, boxH, 8);
-                ctx.fill();
-                ctx.stroke();
+                const px = item.x * cellSize + cellSize / 2, py = item.y * cellSize + cellSize / 2;
+                const r = cellSize / 2 + 1 + pulse;
+                ctx.save(); ctx.translate(px, py);
+                ctx.fillStyle = 'rgba(120,50,0,0.25)'; ctx.beginPath(); ctx.ellipse(0, r * 0.95, r * 0.8, r * 0.22, 0, 0, Math.PI * 2); ctx.fill();
+                const g = ctx.createRadialGradient(-r * 0.35, -r * 0.35, r * 0.1, 0, 0, r * 1.15);
+                g.addColorStop(0, '#ff6b6b'); g.addColorStop(0.55, '#e0242f'); g.addColorStop(1, '#9c1020');
+                ctx.fillStyle = g; ctx.strokeStyle = '#7a0b18'; ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(0, -r * 0.65);
+                ctx.bezierCurveTo(r * 0.25, -r, r * 1.15, -r * 0.85, r * 1.05, r * 0.1);
+                ctx.bezierCurveTo(r * 0.95, r * 0.85, r * 0.4, r * 1.05, 0, r * 0.85);
+                ctx.bezierCurveTo(-r * 0.4, r * 1.05, -r * 0.95, r * 0.85, -r * 1.05, r * 0.1);
+                ctx.bezierCurveTo(-r * 1.15, -r * 0.85, -r * 0.25, -r, 0, -r * 0.65);
+                ctx.fill(); ctx.stroke();
+                ctx.strokeStyle = '#6b3f1d'; ctx.lineWidth = Math.max(2, r * 0.18); ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(0, -r * 0.6); ctx.quadraticCurveTo(r * 0.05, -r, r * 0.28, -r * 1.25); ctx.stroke();
+                ctx.fillStyle = '#4cc13a'; ctx.strokeStyle = '#2b7d1a'; ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(r * 0.12, -r * 0.95); ctx.quadraticCurveTo(r * 0.55, -r * 1.5, r * 0.95, -r * 1.15);
+                ctx.quadraticCurveTo(r * 0.55, -r * 0.8, r * 0.12, -r * 0.95); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath(); ctx.ellipse(-r * 0.5, -r * 0.3, r * 0.16, r * 0.28, -0.5, 0, Math.PI * 2); ctx.fill();
                 ctx.restore();
 
-                // 2. Black outline around text for guaranteed 100% legibility
+                const fs = Math.max(13, Math.floor(cellSize * 0.62));
                 ctx.save();
-                ctx.lineWidth = 3.5;
-                ctx.strokeStyle = '#000000';
-                ctx.strokeText(item.name, px, textY);
-
-                // 3. Crisp Bold White Text
-                ctx.fillStyle = '#ffffff';
-                ctx.shadowColor = item.color;
-                ctx.shadowBlur = 8;
-                ctx.fillText(item.name, px, textY);
-                ctx.restore();
-
+                ctx.font = `800 ${fs}px 'Hind Siliguri', sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                const bw = ctx.measureText(item.name).width + 20, bh = fs + 10;
+                let by = py - r * 1.5 - bh - 2; if (by < 3) by = py + r + 4;
+                const bx = Math.min(Math.max(px - bw / 2, 3), canvas.width - bw - 3);
+                ctx.fillStyle = '#fffdf5'; ctx.strokeStyle = item.color; ctx.lineWidth = 3;
+                ctx.shadowColor = 'rgba(120,60,0,0.3)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+                ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 10); ctx.fill(); ctx.stroke();
+                ctx.shadowColor = 'transparent'; ctx.fillStyle = '#4a2a0a';
+                ctx.fillText(item.name, bx + bw / 2, by + bh / 2 + 1);
                 ctx.restore();
             });
         }
 
+        // ---------- Game logic ----------
         function updateSnake() {
+            prevSnake = snake.map(s => ({ x: s.x, y: s.y }));
             direction = { ...nextDirection };
             const head = { ...snake[0] };
             head.x += direction.x;
             head.y += direction.y;
 
-            // Screen Wrap
             if (head.x < 0) head.x = cols - 1;
             if (head.x >= cols) head.x = 0;
             if (head.y < 0) head.y = rows - 1;
             if (head.y >= rows) head.y = 0;
 
-            // Self-Collision Check
-            if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+            if (snake.slice(0, -1).some(segment => segment.x === head.x && segment.y === head.y)) {
                 gameOver();
                 return;
             }
 
             snake.unshift(head);
+            stepCount++;
 
-            // Food Eat Collision
             const eatenIndex = food.findIndex(item => item.x === head.x && item.y === head.y);
             if (eatenIndex !== -1) {
                 const eaten = food.splice(eatenIndex, 1)[0];
@@ -947,7 +623,7 @@
 
                 if (score > highScore) {
                     highScore = score;
-                    localStorage.setItem('ex_chokkore_best', highScore);
+                    try { localStorage.setItem('ex_chokkore_best', highScore); } catch (e) {}
                     bestVal.textContent = highScore;
                 }
 
@@ -955,11 +631,8 @@
                 triggerHaptic(30);
                 spawnParticles(eaten.x, eaten.y, eaten.color);
 
-                // Spawn Replacement Food
                 const theme = themes[Math.floor(Math.random() * themes.length)];
-                const palette = ['#ff0055', '#00f3ff', '#ffe600', '#ff8800', '#a855f7'];
                 const color = palette[Math.floor(Math.random() * palette.length)];
-
                 for (let retry = 0; retry < 60; retry++) {
                     const candidate = {
                         x: Math.floor(Math.random() * (cols - 4)) + 2,
@@ -969,10 +642,7 @@
                     };
                     const conflict = snake.some(s => s.x === candidate.x && s.y === candidate.y) ||
                                      food.some(f => f.x === candidate.x && f.y === candidate.y);
-                    if (!conflict) {
-                        food.push(candidate);
-                        break;
-                    }
+                    if (!conflict) { food.push(candidate); break; }
                 }
             } else {
                 snake.pop();
@@ -983,7 +653,6 @@
             gameRunning = false;
             playSound('die');
             triggerHaptic(100);
-
             finalScore.textContent = score;
             finalBest.textContent = highScore;
             gameOverScreen.classList.remove('hidden');
@@ -991,21 +660,20 @@
 
         function gameLoop(currentTime) {
             if (!gameRunning) return;
-            const deltaTime = currentTime - lastTime;
+            const deltaTime = Math.min(currentTime - lastTime, 100);
             lastTime = currentTime;
             accumulator += deltaTime;
 
-            while (accumulator >= gameSpeed) {
+            while (gameRunning && accumulator >= gameSpeed) {
                 updateSnake();
                 accumulator -= gameSpeed;
             }
+            renderT = accumulator / gameSpeed;
 
-            // Clear Background
-            ctx.fillStyle = '#04060a';
+            ctx.fillStyle = '#ffd84d';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Subtle Cyber Grid
-            ctx.strokeStyle = 'rgba(34, 197, 94, 0.04)';
+            ctx.strokeStyle = 'rgba(214, 140, 0, 0.16)';
             ctx.lineWidth = 1;
             for (let x = 0; x <= canvas.width; x += cellSize) {
                 ctx.beginPath();
@@ -1039,25 +707,15 @@
             }
         }
 
-        // Keyboard Controls
+        // ---------- Controls ----------
         window.addEventListener('keydown', (e) => {
             const key = e.key.toLowerCase();
-            if (key === 'arrowup' || key === 'w') {
-                changeDirection(0, -1);
-                e.preventDefault();
-            } else if (key === 'arrowdown' || key === 's') {
-                changeDirection(0, 1);
-                e.preventDefault();
-            } else if (key === 'arrowleft' || key === 'a') {
-                changeDirection(-1, 0);
-                e.preventDefault();
-            } else if (key === 'arrowright' || key === 'd') {
-                changeDirection(1, 0);
-                e.preventDefault();
-            }
+            if (key === 'arrowup' || key === 'w') { changeDirection(0, -1); e.preventDefault(); }
+            else if (key === 'arrowdown' || key === 's') { changeDirection(0, 1); e.preventDefault(); }
+            else if (key === 'arrowleft' || key === 'a') { changeDirection(-1, 0); e.preventDefault(); }
+            else if (key === 'arrowright' || key === 'd') { changeDirection(1, 0); e.preventDefault(); }
         });
 
-        // Touch & Swipe Controls
         let touchStartX = 0;
         let touchStartY = 0;
         const SWIPE_DIST = 22;
@@ -1074,26 +732,21 @@
             if (!gameRunning) return;
             e.preventDefault();
             if (e.touches.length === 0) return;
-
             const curX = e.touches[0].clientX;
             const curY = e.touches[0].clientY;
             const dx = curX - touchStartX;
             const dy = curY - touchStartY;
-
             if (Math.abs(dx) > SWIPE_DIST || Math.abs(dy) > SWIPE_DIST) {
                 if (Math.abs(dx) > Math.abs(dy)) {
-                    if (dx > 0) changeDirection(1, 0);
-                    else changeDirection(-1, 0);
+                    if (dx > 0) changeDirection(1, 0); else changeDirection(-1, 0);
                 } else {
-                    if (dy > 0) changeDirection(0, 1);
-                    else changeDirection(0, -1);
+                    if (dy > 0) changeDirection(0, 1); else changeDirection(0, -1);
                 }
                 touchStartX = curX;
                 touchStartY = curY;
             }
         }, { passive: false });
 
-        // D-Pad Button Setup
         function setupDpadKey(id, dx, dy) {
             const btn = document.getElementById(id);
             const press = (e) => {
@@ -1103,7 +756,6 @@
                 btn.classList.add('active');
             };
             const release = () => btn.classList.remove('active');
-
             btn.addEventListener('touchstart', press, { passive: false });
             btn.addEventListener('touchend', release, { passive: false });
             btn.addEventListener('mousedown', press);
